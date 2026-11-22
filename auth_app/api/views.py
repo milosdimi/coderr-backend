@@ -1,11 +1,20 @@
-"""API views for registration and login."""
-from rest_framework import status
+"""API views for registration, login and user profiles."""
+from rest_framework import generics, status
 from rest_framework.authtoken.models import Token
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .serializers import LoginSerializer, RegistrationSerializer
+from auth_app.models import UserProfile
+
+from .permissions import IsProfileOwnerOrReadOnly
+from .serializers import (
+    BusinessProfileListSerializer,
+    CustomerProfileListSerializer,
+    LoginSerializer,
+    ProfileDetailSerializer,
+    RegistrationSerializer,
+)
 
 
 def build_auth_response(user):
@@ -54,3 +63,37 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
         return Response(build_auth_response(user), status=status.HTTP_200_OK)
+
+
+class ProfileDetailView(generics.RetrieveUpdateAPIView):
+    """GET / PATCH /api/profile/{pk}/ - one profile, pk is the user id.
+
+    Every logged in user may read it, only the owner may change it.
+    """
+
+    queryset = UserProfile.objects.select_related("user")
+    serializer_class = ProfileDetailSerializer
+    permission_classes = [IsAuthenticated, IsProfileOwnerOrReadOnly]
+    lookup_field = "user"
+    lookup_url_kwarg = "pk"
+    http_method_names = ["get", "patch"]
+
+
+class BusinessProfileListView(generics.ListAPIView):
+    """GET /api/profiles/business/ - all business profiles."""
+
+    queryset = UserProfile.objects.select_related("user").filter(
+        type=UserProfile.BUSINESS
+    )
+    serializer_class = BusinessProfileListSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CustomerProfileListView(generics.ListAPIView):
+    """GET /api/profiles/customer/ - all customer profiles."""
+
+    queryset = UserProfile.objects.select_related("user").filter(
+        type=UserProfile.CUSTOMER
+    )
+    serializer_class = CustomerProfileListSerializer
+    permission_classes = [IsAuthenticated]

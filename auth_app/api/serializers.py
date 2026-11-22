@@ -1,4 +1,4 @@
-"""Serializers for registration and login."""
+"""Serializers for registration, login and user profiles."""
 from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.db import transaction
@@ -65,3 +65,74 @@ class LoginSerializer(serializers.Serializer):
             )
         attrs["user"] = user
         return attrs
+
+
+class BaseProfileSerializer(serializers.ModelSerializer):
+    """Profile fields shared by all profile responses.
+
+    Username and names live in Django's User model and are read
+    through the related user.
+    """
+
+    username = serializers.CharField(source="user.username", read_only=True)
+    first_name = serializers.CharField(
+        source="user.first_name", max_length=150,
+        required=False, allow_blank=True,
+    )
+    last_name = serializers.CharField(
+        source="user.last_name", max_length=150,
+        required=False, allow_blank=True,
+    )
+
+
+class BusinessProfileListSerializer(BaseProfileSerializer):
+    """Business profile as shown in the business profile list."""
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "user", "username", "first_name", "last_name", "file",
+            "location", "tel", "description", "working_hours", "type",
+        ]
+
+
+class CustomerProfileListSerializer(BaseProfileSerializer):
+    """Customer profile as shown in the customer profile list."""
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "user", "username", "first_name", "last_name", "file",
+            "uploaded_at", "type",
+        ]
+
+
+class ProfileDetailSerializer(BaseProfileSerializer):
+    """Full profile of one user; used for reading and updating (PATCH)."""
+
+    email = serializers.EmailField(source="user.email", required=False)
+
+    class Meta:
+        model = UserProfile
+        fields = [
+            "user", "username", "first_name", "last_name", "file",
+            "location", "tel", "description", "working_hours", "type",
+            "email", "created_at",
+        ]
+        read_only_fields = ["user", "type", "created_at"]
+
+    def validate_email(self, value):
+        """Reject an email address that another user already has."""
+        email = value.lower()
+        other_users = User.objects.exclude(pk=self.instance.user.pk)
+        if other_users.filter(email__iexact=email).exists():
+            raise serializers.ValidationError("This email is already in use.")
+        return email
+
+    def update(self, instance, validated_data):
+        """Save the user fields on the User, the rest on the profile."""
+        user_data = validated_data.pop("user", {})
+        for field, value in user_data.items():
+            setattr(instance.user, field, value)
+        instance.user.save()
+        return super().update(instance, validated_data)
