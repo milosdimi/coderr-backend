@@ -1,0 +1,27 @@
+# Virtual environment
+env/
+venv/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Database (never upload to GitHub)
+db.sqlite3
+
+# Uploaded files and collected static files
+media/
+staticfiles/
+
+# Coverage reports
+.coverage
+htmlcov/
+
+# Local endpoint documentation
+docs/
+
+# Environment variables and IDE settings
+.env
+.vscode/
+.idea/
