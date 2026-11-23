@@ -44,6 +44,11 @@ ALLOWED_HOSTS = env_list('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost')
 # Needed for the admin login over HTTPS on the server.
 CSRF_TRUSTED_ORIGINS = env_list('DJANGO_CSRF_TRUSTED_ORIGINS', '')
 
+# The host (e.g. PythonAnywhere) ends HTTPS and forwards the request to
+# Django; this header tells Django the original request was HTTPS, so
+# image and detail URLs are built with https://.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 
 # Application definition
 
