@@ -1,3 +1,4 @@
+"""Admin panel registration of the orders app."""
 from django.contrib import admin
 
 from .models import Order

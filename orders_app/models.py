@@ -1,3 +1,4 @@
+"""Database model(s) of the orders app: Order."""
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -42,4 +43,5 @@ class Order(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
+        """Readable name, e.g. in the admin panel."""
         return f'{self.title} ({self.status})'

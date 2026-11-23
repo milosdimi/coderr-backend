@@ -1,3 +1,4 @@
+"""Database model of the auth app: UserProfile."""
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -36,4 +37,5 @@ class UserProfile(models.Model):
         ordering = ['user__username']
 
     def __str__(self):
+        """Readable name, e.g. in the admin panel."""
         return f'{self.user.username} ({self.type})'

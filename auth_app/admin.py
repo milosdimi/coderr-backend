@@ -1,3 +1,4 @@
+"""Admin panel registration of the auth app (registration, login, profiles)."""
 from django.contrib import admin
 
 from .models import UserProfile

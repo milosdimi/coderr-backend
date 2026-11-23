@@ -1,3 +1,4 @@
+"""Database model(s) of the offers app: Offer and OfferDetail."""
 from django.contrib.auth.models import User
 from django.db import models
 
@@ -23,6 +24,7 @@ class Offer(models.Model):
         ordering = ['-updated_at']
 
     def __str__(self):
+        """Readable name, e.g. in the admin panel."""
         return self.title
 
 
@@ -63,4 +65,5 @@ class OfferDetail(models.Model):
         ]
 
     def __str__(self):
+        """Readable name, e.g. in the admin panel."""
         return f'{self.offer.title} - {self.offer_type}'

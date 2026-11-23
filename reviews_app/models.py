@@ -1,3 +1,4 @@
+"""Database model(s) of the reviews app: Review."""
 from django.contrib.auth.models import User
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -34,4 +35,5 @@ class Review(models.Model):
         ]
 
     def __str__(self):
+        """Readable name, e.g. in the admin panel."""
         return f'{self.reviewer} -> {self.business_user}: {self.rating}'
