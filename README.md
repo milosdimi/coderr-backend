@@ -10,10 +10,22 @@ is provided separately by the Developer Akademie and talks to this API.
 Built with **Django** and **Django REST Framework**, using token
 authentication.
 
+## Live demo
+
+| Part      | URL                                            | Hosting        |
+|-----------|------------------------------------------------|----------------|
+| Frontend  | <https://coderr.dimit.cc>                      | Namecheap      |
+| API       | <https://milosdimi2.pythonanywhere.com/api/>   | PythonAnywhere |
+
+Log in with one of the [guest accounts](#guest-login) or register your own
+account. The live API uses its own database, separate from any local
+installation.
+
 ---
 
 ## Table of contents
 
+- [Live demo](#live-demo)
 - [Tech stack](#tech-stack)
 - [Requirements](#requirements)
 - [Installation](#installation)
