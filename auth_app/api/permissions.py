@@ -1,5 +1,27 @@
-"""Permissions of the auth app."""
+"""Permissions of the auth app.
+
+IsBusinessUser is also used by other apps, because the profile type
+belongs to this app.
+"""
 from rest_framework.permissions import SAFE_METHODS, BasePermission
+
+from auth_app.models import UserProfile
+
+
+def has_profile_type(user, profile_type):
+    """Return True if the user has a profile of the given type."""
+    profile = getattr(user, "profile", None)
+    return profile is not None and profile.type == profile_type
+
+
+class IsBusinessUser(BasePermission):
+    """Only users with a business profile get access."""
+
+    message = "Only business users can perform this action."
+
+    def has_permission(self, request, view):
+        """Check the profile type of the logged in user."""
+        return has_profile_type(request.user, UserProfile.BUSINESS)
 
 
 class IsProfileOwnerOrReadOnly(BasePermission):

@@ -157,6 +157,8 @@ REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
     ],
+    # Prices are returned as numbers (100.0) instead of strings ("100.00").
+    'COERCE_DECIMAL_TO_STRING': False,
 }
 
 
