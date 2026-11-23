@@ -1,7 +1,7 @@
 """Permissions of the auth app.
 
-IsBusinessUser is also used by other apps, because the profile type
-belongs to this app.
+IsBusinessUser and IsCustomerUser are also used by other apps,
+because the profile type belongs to this app.
 """
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 
@@ -22,6 +22,16 @@ class IsBusinessUser(BasePermission):
     def has_permission(self, request, view):
         """Check the profile type of the logged in user."""
         return has_profile_type(request.user, UserProfile.BUSINESS)
+
+
+class IsCustomerUser(BasePermission):
+    """Only users with a customer profile get access."""
+
+    message = "Only customer users can perform this action."
+
+    def has_permission(self, request, view):
+        """Check the profile type of the logged in user."""
+        return has_profile_type(request.user, UserProfile.CUSTOMER)
 
 
 class IsProfileOwnerOrReadOnly(BasePermission):
